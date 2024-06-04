@@ -1,0 +1,23 @@
+package auth
+
+import (
+	"garasystem/internal/core/domain"
+	"garasystem/internal/core/myerror"
+	"garasystem/pkg/util"
+	"github.com/labstack/echo/v4"
+)
+
+func (h *Handler) Verify(c echo.Context) error {
+	var req domain.VerifyRequest
+	err := c.Bind(&req)
+	if err != nil {
+		return util.Response.Error(c, myerror.ErrInvalidVerify(err))
+	}
+
+	err = h.service.VerifyAccount(req)
+	if err != nil {
+		return util.Response.Error(c, err.(myerror.MyError))
+	}
+
+	return util.Response.Success(c, nil)
+}

@@ -82,3 +82,12 @@ func ErrAuthResendCode(err error) MyError {
 		Message:   "Resend code fail",
 	}
 }
+
+func ErrAuthUnauthorized(err error) MyError {
+	return MyError{
+		Raw:       err,
+		HTTPCode:  http.StatusUnauthorized,
+		ErrorCode: 100008,
+		Message:   "Unauthorized",
+	}
+}

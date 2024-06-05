@@ -7,8 +7,9 @@ import (
 )
 
 type Config struct {
-	AppEnv string `envconfig:"APP_ENV"`
-	Port   int    `envconfig:"PORT"`
+	AppEnv       string `envconfig:"APP_ENV"`
+	Port         int    `envconfig:"PORT"`
+	JwtSecretKey string `envconfig:"JWT_SECRET_KEY"`
 
 	DB struct {
 		Name      string `envconfig:"DB_NAME"`

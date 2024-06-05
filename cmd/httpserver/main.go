@@ -47,7 +47,7 @@ func main() {
 	snsService := snsservice.NewSnsService(awsConfig)
 	userService = userservice.NewUserService(repo, snsService)
 
-	server, _ := httpserver.NewServer(userService, snsService)
+	server, _ := httpserver.NewServer(cfg, userService, snsService)
 
 	addr := fmt.Sprintf(":%d", cfg.Port)
 	logger.Log.Println("server started at port", addr)

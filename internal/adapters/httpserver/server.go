@@ -27,7 +27,7 @@ func NewServer(
 		config:      config,
 		Router:      echo.New(),
 		userHandler: user.NewHandler(userService),
-		authHandler: auth.NewHandler(userService, snsService),
+		authHandler: auth.NewHandler(config, userService, snsService),
 	}
 
 	// Middleware
@@ -49,6 +49,7 @@ func NewServer(
 	authGroup.POST("/register", s.authHandler.Register)
 	authGroup.POST("/verify", s.authHandler.Verify)
 	authGroup.POST("/resend-code", s.authHandler.ResendCode)
+	authGroup.POST("/login", s.authHandler.Login)
 
 	return s, nil
 }

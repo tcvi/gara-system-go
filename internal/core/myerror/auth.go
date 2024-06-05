@@ -91,3 +91,30 @@ func ErrAuthUnauthorized(err error) MyError {
 		Message:   "Unauthorized",
 	}
 }
+
+func ErrAuthWrongPassword(err error) MyError {
+	return MyError{
+		Raw:       err,
+		HTTPCode:  http.StatusBadRequest,
+		ErrorCode: 100009,
+		Message:   "Wrong password",
+	}
+}
+
+func ErrAuthAccountNotActive(err error) MyError {
+	return MyError{
+		Raw:       err,
+		HTTPCode:  http.StatusBadRequest,
+		ErrorCode: 100010,
+		Message:   "Account not active",
+	}
+}
+
+func ErrAuthGenerateToken(err error) MyError {
+	return MyError{
+		Raw:       err,
+		HTTPCode:  http.StatusBadRequest,
+		ErrorCode: 100010,
+		Message:   "Generate token fail",
+	}
+}

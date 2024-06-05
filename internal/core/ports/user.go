@@ -21,4 +21,5 @@ type UserService interface {
 	UpdateUser(id, email, password string) error
 	VerifyAccount(req domain.VerifyRequest) error
 	ResendCode(req domain.ResendCodeRequest) error
+	Login(req domain.LoginRequest, secretKey string) (*domain.UserLoginResponse, error)
 }

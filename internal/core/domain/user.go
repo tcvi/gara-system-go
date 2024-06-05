@@ -28,3 +28,17 @@ type RegisterUserReq struct {
 type ResendCodeRequest struct {
 	UserName string `json:"user_name"`
 }
+
+type LoginRequest struct {
+	UserName string `json:"user_name"`
+	Password string `json:"password"`
+}
+
+type UserLoginResponse struct {
+	ID          int64     `json:"id"`
+	PhoneNumber string    `json:"phone_number"`
+	UserName    string    `json:"user_name"`
+	CreatedAt   time.Time `json:"created_at"`
+	UpdatedAt   time.Time `json:"updated_at"`
+	Token       string    `json:"token"`
+}

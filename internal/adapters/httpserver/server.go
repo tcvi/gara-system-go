@@ -38,6 +38,7 @@ func NewServer(userService ports.UserService, snsService ports.SNSService) (*Ser
 	authGroup := apiGroup.Group("/auths")
 	authGroup.POST("/register", s.authHandler.Register)
 	authGroup.POST("/verify", s.authHandler.Verify)
+	authGroup.POST("/resend-code", s.authHandler.ResendCode)
 
 	return s, nil
 }

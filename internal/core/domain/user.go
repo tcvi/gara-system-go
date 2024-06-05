@@ -24,3 +24,7 @@ type RegisterUserReq struct {
 	Phone    string `json:"phone"`
 	Password string `json:"password"`
 }
+
+type ResendCodeRequest struct {
+	UserName string `json:"user_name"`
+}

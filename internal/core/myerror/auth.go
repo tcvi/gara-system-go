@@ -64,3 +64,21 @@ func ErrAuthInvalidDataRequest(err error) MyError {
 		Message:   "Invalid data",
 	}
 }
+
+func ErrAuthResendCodeLater(err error) MyError {
+	return MyError{
+		Raw:       err,
+		HTTPCode:  http.StatusBadRequest,
+		ErrorCode: 100007,
+		Message:   "Resend later",
+	}
+}
+
+func ErrAuthResendCode(err error) MyError {
+	return MyError{
+		Raw:       err,
+		HTTPCode:  http.StatusInternalServerError,
+		ErrorCode: 100008,
+		Message:   "Resend code fail",
+	}
+}

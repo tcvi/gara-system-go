@@ -20,4 +20,5 @@ type UserService interface {
 	CreateUser(req domain.RegisterUserReq) error
 	UpdateUser(id, email, password string) error
 	VerifyAccount(req domain.VerifyRequest) error
+	ResendCode(req domain.ResendCodeRequest) error
 }

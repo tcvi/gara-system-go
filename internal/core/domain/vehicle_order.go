@@ -26,13 +26,14 @@ type UpdateVehicleOrderRequest struct {
 }
 
 type VehicleOrderModel struct {
-	ID        int64     `json:"id"`
-	User      UserModel `json:"user"`
-	Handler   UserModel `json:"handler"`
-	Status    Status    `json:"status"`
-	Note      string    `json:"note"`
-	CreatedAt time.Time `json:"created_at"`
-	UpdatedAt time.Time `json:"updated_at"`
+	ID              int64                            `json:"id"`
+	User            UserModel                        `json:"user"`
+	Handler         UserModel                        `json:"handler"`
+	Status          Status                           `json:"status"`
+	Note            string                           `json:"note"`
+	HistoryStatuses []VehicleOrderStatusHistoryModel `json:"history_statuses,omitempty"`
+	CreatedAt       time.Time                        `json:"created_at"`
+	UpdatedAt       time.Time                        `json:"updated_at"`
 }
 
 type FilterRequest struct {

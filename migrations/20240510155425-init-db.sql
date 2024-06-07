@@ -26,7 +26,7 @@ CREATE TABLE "vehicle_orders"
     "updated_at" timestamp DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE "history_vehicle_order_status"
+CREATE TABLE "vehicle_order_status_histories"
 (
     "id"               SERIAL PRIMARY KEY,
     "vehicle_order_id" bigint         NOT NULL,
@@ -80,7 +80,7 @@ ALTER TABLE "vehicle_orders"
 ALTER TABLE "vehicle_orders"
     ADD FOREIGN KEY ("handler_id") REFERENCES "users" ("id");
 
-ALTER TABLE "history_vehicle_order_status"
+ALTER TABLE "vehicle_order_status_histories"
     ADD FOREIGN KEY ("vehicle_order_id") REFERENCES "vehicle_orders" ("id");
 
 ALTER TABLE "items"
@@ -97,7 +97,7 @@ ALTER TABLE "invoices"
 -- +migrate Down
 
 -- Drop foreign keys in reverse order of creation
-ALTER TABLE "history_vehicle_order_status" DROP CONSTRAINT IF EXISTS "history_vehicle_order_status_vehicle_order_id_fkey";
+ALTER TABLE "vehicle_order_status_histories" DROP CONSTRAINT IF EXISTS "vehicle_order_status_histories_vehicle_order_id_fkey";
 ALTER TABLE "invoices" DROP CONSTRAINT IF EXISTS "invoices_vehicle_order_id_fkey";
 ALTER TABLE "items" DROP CONSTRAINT IF EXISTS "items_category_id_fkey";
 ALTER TABLE "vehicle_order_items" DROP CONSTRAINT IF EXISTS "vehicle_order_items_vehicle_order_id_fkey";
@@ -111,7 +111,7 @@ DROP TABLE "vehicle_order_items";
 DROP TABLE "items";
 DROP TABLE "categories";
 
-DROP TABLE "history_vehicle_order_status";
+DROP TABLE "vehicle_order_status_histories";
 DROP TABLE "vehicle_orders";
 DROP TYPE vehicle_status;
 DROP TABLE "users";

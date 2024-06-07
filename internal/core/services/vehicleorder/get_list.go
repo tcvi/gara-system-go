@@ -5,8 +5,8 @@ import (
 	"garasystem/internal/core/myerror"
 )
 
-func (u *Service) GetList(req domain.FilterRequest) ([]domain.VehicleOrderModel, error) {
-	vehicleOrders, err := u.repo.VehicleStore.GetList(&req)
+func (s *Service) GetList(req domain.FilterRequest) ([]domain.VehicleOrderModel, error) {
+	vehicleOrders, err := s.repo.VehicleStore.GetList(&req)
 	if err != nil {
 		return nil, myerror.ErrVehicleGetList(err)
 	}
@@ -30,7 +30,7 @@ func (u *Service) GetList(req domain.FilterRequest) ([]domain.VehicleOrderModel,
 		}
 	}
 
-	users, err := u.repo.UserStore.GetList("id IN (?)", userIDs)
+	users, err := s.repo.UserStore.GetList("id IN (?)", userIDs)
 	if err != nil {
 		return nil, myerror.ErrVehicleGetUsers(err)
 	}

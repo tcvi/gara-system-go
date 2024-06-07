@@ -23,8 +23,8 @@ func validateCreate(s *Service, req domain.CreateVehicleOrderRequest) error {
 	return nil
 }
 
-func (u *Service) Create(req domain.CreateVehicleOrderRequest) error {
-	err := validateCreate(u, req)
+func (s *Service) Create(req domain.CreateVehicleOrderRequest) error {
+	err := validateCreate(s, req)
 	if err != nil {
 		return err
 	}
@@ -36,7 +36,7 @@ func (u *Service) Create(req domain.CreateVehicleOrderRequest) error {
 		Status:    domain.New,
 	}
 
-	err = u.repo.VehicleStore.Create(vehicleOrder)
+	err = s.repo.VehicleStore.Create(vehicleOrder)
 	if err != nil {
 		return myerror.ErrVehicleCreate(err)
 	}

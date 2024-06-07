@@ -9,7 +9,8 @@ type VehicleOrderStore interface {
 	GetByID(id int64) (*domain.VehicleOrder, error)
 	GetList(*domain.FilterRequest) ([]domain.VehicleOrder, error)
 	Create(*domain.VehicleOrder) error
-	Update(*domain.VehicleOrder) error
+	Update(vehicleOrder *domain.VehicleOrder, isLogStatusHistory bool) error
+	StatusHistories(vehicleID int64) ([]domain.VehicleOrderStatusHistory, error)
 }
 
 type VehicleOrderService interface {
@@ -17,6 +18,7 @@ type VehicleOrderService interface {
 	GetList(req domain.FilterRequest) ([]domain.VehicleOrderModel, error)
 	Create(req domain.CreateVehicleOrderRequest) error
 	Update(req domain.UpdateVehicleOrderRequest) error
+	StatusHistories(vehicleID int64) ([]domain.VehicleOrderStatusHistoryModel, error)
 }
 
 type VehicleOrderHandler interface {

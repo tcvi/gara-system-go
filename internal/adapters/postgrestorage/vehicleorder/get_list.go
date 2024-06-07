@@ -37,7 +37,7 @@ func (s *Storage) GetList(filter *domain.FilterRequest) ([]domain.VehicleOrder, 
 		}
 	}
 
-	err := db.Find(&vehicleOrders).Error
+	err := db.Order("updated_at Desc").Find(&vehicleOrders).Error
 	if err != nil {
 		return nil, errors.Wrap(err, "Get list VehicleOrder fail")
 	}

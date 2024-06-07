@@ -13,12 +13,12 @@ func validate(req domain.UpdateVehicleOrderRequest) error {
 	return nil
 }
 
-func (u *Service) Update(req domain.UpdateVehicleOrderRequest) error {
+func (s *Service) Update(req domain.UpdateVehicleOrderRequest) error {
 	if err := validate(req); err != nil {
 		return err
 	}
 
-	vehicleStore, err := u.repo.VehicleStore.GetByID(req.ID)
+	vehicleStore, err := s.repo.VehicleStore.GetByID(req.ID)
 	if err != nil {
 		return myerror.ErrVehicleOrderGet(err)
 	}
@@ -28,9 +28,11 @@ func (u *Service) Update(req domain.UpdateVehicleOrderRequest) error {
 		return myerror.ErrVehicleStatusInvalid(err)
 	}
 
+	isLogStatusHistory := *status != vehicleStore.Status
+
 	vehicleStore.HandlerID = req.HandlerID
 	vehicleStore.Note = req.Note
 	vehicleStore.Status = *status
 
-	return u.repo.VehicleStore.Update(vehicleStore)
+	return s.repo.VehicleStore.Update(vehicleStore, isLogStatusHistory)
 }

@@ -100,3 +100,12 @@ func ErrVehicleInvalidIDParam(err error) MyError {
 		Message:   "Invalid id param",
 	}
 }
+
+func ErrVehicleGetStatusHistories(err error) MyError {
+	return MyError{
+		Raw:       err,
+		HTTPCode:  http.StatusBadRequest,
+		ErrorCode: 102011,
+		Message:   "Get status histories fail",
+	}
+}

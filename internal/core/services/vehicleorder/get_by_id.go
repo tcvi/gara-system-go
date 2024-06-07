@@ -5,25 +5,31 @@ import (
 	"garasystem/internal/core/myerror"
 )
 
-func (u *Service) GetByID(id int64) (*domain.VehicleOrderModel, error) {
-	vehicleOrder, err := u.repo.VehicleStore.GetByID(id)
+func (s *Service) GetByID(id int64) (*domain.VehicleOrderModel, error) {
+	vehicleOrder, err := s.repo.VehicleStore.GetByID(id)
 	if err != nil {
 		return nil, myerror.ErrVehicleOrderGet(nil)
 	}
 
 	vehicleOrderModel := vehicleOrder.MappingVehicleOrderModel()
 
-	user, err := u.userService.GetByID(vehicleOrder.UserID)
+	user, err := s.userService.GetByID(vehicleOrder.UserID)
 	if err != nil {
 		return nil, myerror.ErrVehicleOrderGetUser(err)
 	}
 	vehicleOrderModel.User = *user
 
-	handler, err := u.userService.GetByID(vehicleOrder.UserID)
+	handler, err := s.userService.GetByID(vehicleOrder.UserID)
 	if err != nil {
 		return nil, myerror.ErrVehicleOrderGetHandler(err)
 	}
 	vehicleOrderModel.Handler = *handler
+
+	histories, err := s.StatusHistories(vehicleOrder.ID)
+	if err != nil {
+		return nil, err
+	}
+	vehicleOrderModel.HistoryStatuses = histories
 
 	return vehicleOrderModel, nil
 }

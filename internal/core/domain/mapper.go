@@ -33,3 +33,13 @@ func (v *VehicleOrder) MappingVehicleOrderModel() *VehicleOrderModel {
 		UpdatedAt: v.UpdatedAt,
 	}
 }
+
+func (h *VehicleOrderStatusHistory) MappingHistoryVehicleOrderStatusModel() *VehicleOrderStatusHistoryModel {
+	return &VehicleOrderStatusHistoryModel{
+		ID:             h.ID,
+		VehicleOrderID: h.VehicleOrderID,
+		Status:         h.Status,
+		CreatedAt:      h.CreatedAt,
+		UpdatedAt:      h.UpdatedAt,
+	}
+}

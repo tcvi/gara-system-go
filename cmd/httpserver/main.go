@@ -7,8 +7,10 @@ import (
 	"garasystem/internal/adapters/httpserver"
 	"garasystem/internal/adapters/postgrestorage"
 	userstorage "garasystem/internal/adapters/postgrestorage/user"
+	vehicleorderstorage "garasystem/internal/adapters/postgrestorage/vehicleorder"
 	"garasystem/internal/core/services"
 	userservice "garasystem/internal/core/services/user"
+	vehicleorderservice "garasystem/internal/core/services/vehicleorder"
 	"garasystem/internal/logger"
 	"garasystem/pkg/config"
 	"net/http"
@@ -41,13 +43,15 @@ func main() {
 
 	userStore := userstorage.NewStorage(db)
 	//userStore := userstorage.NewStorage(db)
+	vehicleStore := vehicleorderstorage.NewStorage(db)
 
-	repo := services.NewRepository(userStore)
+	repo := services.NewRepository(userStore, vehicleStore)
 
 	snsService := snsservice.NewSnsService(awsConfig)
 	userService = userservice.NewUserService(repo, snsService)
+	vehicleOrderService := vehicleorderservice.NewVehicleService(repo, userService)
 
-	server, _ := httpserver.NewServer(cfg, userService, snsService)
+	server, _ := httpserver.NewServer(cfg, userService, vehicleOrderService, snsService)
 
 	addr := fmt.Sprintf(":%d", cfg.Port)
 	logger.Log.Println("server started at port", addr)

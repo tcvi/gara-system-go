@@ -14,6 +14,14 @@ type User struct {
 	ExpCode     time.Time `gorm:"column:exp_code" dynamodbav:"exp_code"`
 }
 
+type UserModel struct {
+	ID          int64     `json:"id"`
+	PhoneNumber string    `json:"phone_number"`
+	UserName    string    `json:"user_name"`
+	CreatedAt   time.Time `json:"created_at"`
+	UpdatedAt   time.Time `json:"updated_at"`
+}
+
 type VerifyRequest struct {
 	Code     string `json:"code"`
 	UserName string `json:"user_name"`
@@ -35,10 +43,6 @@ type LoginRequest struct {
 }
 
 type UserLoginResponse struct {
-	ID          int64     `json:"id"`
-	PhoneNumber string    `json:"phone_number"`
-	UserName    string    `json:"user_name"`
-	CreatedAt   time.Time `json:"created_at"`
-	UpdatedAt   time.Time `json:"updated_at"`
-	Token       string    `json:"token"`
+	UserModel
+	Token string `json:"token"`
 }

@@ -3,6 +3,7 @@ package httpserver
 import (
 	"garasystem/internal/adapters/httpserver/handler/auth"
 	"garasystem/internal/adapters/httpserver/handler/user"
+	"garasystem/internal/adapters/httpserver/handler/vehicleorder"
 	"garasystem/internal/core/ports"
 	"garasystem/pkg/config"
 	"garasystem/pkg/jwt"
@@ -12,22 +13,25 @@ import (
 )
 
 type Server struct {
-	config      *config.Config
-	Router      *echo.Echo
-	userHandler ports.UserHandler
-	authHandler ports.AuthHandler
+	config         *config.Config
+	Router         *echo.Echo
+	userHandler    ports.UserHandler
+	authHandler    ports.AuthHandler
+	vehicleHandler ports.VehicleOrderHandler
 }
 
 func NewServer(
 	config *config.Config,
 	userService ports.UserService,
+	vehicleService ports.VehicleOrderService,
 	snsService ports.SNSService,
 ) (*Server, error) {
 	s := &Server{
-		config:      config,
-		Router:      echo.New(),
-		userHandler: user.NewHandler(userService),
-		authHandler: auth.NewHandler(config, userService, snsService),
+		config:         config,
+		Router:         echo.New(),
+		userHandler:    user.NewHandler(userService),
+		authHandler:    auth.NewHandler(config, userService, snsService),
+		vehicleHandler: vehicleorder.NewHandler(vehicleService),
 	}
 
 	// Middleware
@@ -50,6 +54,12 @@ func NewServer(
 	authGroup.POST("/verify", s.authHandler.Verify)
 	authGroup.POST("/resend-code", s.authHandler.ResendCode)
 	authGroup.POST("/login", s.authHandler.Login)
+
+	vehicleGroup := apiGroup.Group("/vehicle-orders")
+	vehicleGroup.GET("/:id", s.vehicleHandler.GetByID)
+	vehicleGroup.GET("", s.vehicleHandler.GetList)
+	vehicleGroup.POST("", s.vehicleHandler.Create)
+	vehicleGroup.PUT("/:id", s.vehicleHandler.Update)
 
 	return s, nil
 }

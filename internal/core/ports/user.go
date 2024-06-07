@@ -7,6 +7,7 @@ import (
 
 type UserStore interface {
 	Get(query interface{}, args ...interface{}) (*domain.User, error)
+	GetList(query interface{}, args ...interface{}) ([]domain.User, error)
 	Create(user *domain.User) error
 	Update(user *domain.User) error
 	IsExisted(userName string, email string, phone string) error
@@ -17,6 +18,7 @@ type UserHandler interface {
 }
 
 type UserService interface {
+	GetByID(id int64) (*domain.UserModel, error)
 	CreateUser(req domain.RegisterUserReq) error
 	UpdateUser(id, email, password string) error
 	VerifyAccount(req domain.VerifyRequest) error

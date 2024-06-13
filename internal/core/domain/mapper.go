@@ -43,3 +43,12 @@ func (h *VehicleOrderStatusHistory) MappingHistoryVehicleOrderStatusModel() *Veh
 		UpdatedAt:      h.UpdatedAt,
 	}
 }
+
+func (c *Category) MappingCategoryModel() *CategoryModel {
+	return &CategoryModel{
+		ID:        c.ID,
+		Name:      c.Name,
+		CreatedAt: c.CreatedAt,
+		UpdatedAt: c.UpdatedAt,
+	}
+}

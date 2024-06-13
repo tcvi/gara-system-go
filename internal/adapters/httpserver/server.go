@@ -2,6 +2,7 @@ package httpserver
 
 import (
 	"garasystem/internal/adapters/httpserver/handler/auth"
+	"garasystem/internal/adapters/httpserver/handler/category"
 	"garasystem/internal/adapters/httpserver/handler/user"
 	"garasystem/internal/adapters/httpserver/handler/vehicleorder"
 	"garasystem/internal/core/ports"
@@ -13,25 +14,28 @@ import (
 )
 
 type Server struct {
-	config         *config.Config
-	Router         *echo.Echo
-	userHandler    ports.UserHandler
-	authHandler    ports.AuthHandler
-	vehicleHandler ports.VehicleOrderHandler
+	config          *config.Config
+	Router          *echo.Echo
+	userHandler     ports.UserHandler
+	authHandler     ports.AuthHandler
+	vehicleHandler  ports.VehicleOrderHandler
+	categoryHandler ports.CategoryHandler
 }
 
 func NewServer(
 	config *config.Config,
 	userService ports.UserService,
 	vehicleService ports.VehicleOrderService,
+	categoryService ports.CategoryService,
 	snsService ports.SNSService,
 ) (*Server, error) {
 	s := &Server{
-		config:         config,
-		Router:         echo.New(),
-		userHandler:    user.NewHandler(userService),
-		authHandler:    auth.NewHandler(config, userService, snsService),
-		vehicleHandler: vehicleorder.NewHandler(vehicleService),
+		config:          config,
+		Router:          echo.New(),
+		userHandler:     user.NewHandler(userService),
+		authHandler:     auth.NewHandler(config, userService, snsService),
+		vehicleHandler:  vehicleorder.NewHandler(vehicleService),
+		categoryHandler: category.NewHandler(categoryService),
 	}
 
 	// Middleware
@@ -60,6 +64,12 @@ func NewServer(
 	vehicleGroup.GET("", s.vehicleHandler.GetList)
 	vehicleGroup.POST("", s.vehicleHandler.Create)
 	vehicleGroup.PUT("/:id", s.vehicleHandler.Update)
+
+	categoryGroup := apiGroup.Group("/categories")
+	categoryGroup.GET("", s.categoryHandler.GetList)
+	categoryGroup.POST("", s.categoryHandler.Create)
+	categoryGroup.PUT("/:id", s.categoryHandler.Update)
+	categoryGroup.DELETE("/:id", s.categoryHandler.Delete)
 
 	return s, nil
 }

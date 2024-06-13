@@ -12,7 +12,6 @@ func (s *Storage) GetList(filter *domain.FilterRequest) ([]domain.VehicleOrder, 
 	db := s.db
 	if filter != nil {
 		query := make(map[string]interface{})
-		fmt.Println("Oke ", filter.UserID)
 
 		if filter.Status != "" {
 			query["status"] = filter.Status

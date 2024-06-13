@@ -52,7 +52,8 @@ CREATE TABLE "vehicle_order_items"
     "vehicle_order_id" bigint NOT NULL,
     "item_id"          bigint,
     "note"             text,
-    "price"            bigint    DEFAULT 0,
+    "price"            bigint    NOT NULL,
+    "quantity"         int       NOT NULL,
     "created_at"       timestamp DEFAULT CURRENT_TIMESTAMP,
     "updated_at"       timestamp DEFAULT CURRENT_TIMESTAMP
 );
@@ -60,7 +61,7 @@ CREATE TABLE "vehicle_order_items"
 CREATE TABLE "categories"
 (
     "id"         SERIAL PRIMARY KEY,
-    "name"       varchar(255) NOT NULL,
+    "name"       varchar(255) NOT NULL UNIQUE,
     "created_at" timestamp DEFAULT CURRENT_TIMESTAMP,
     "updated_at" timestamp DEFAULT CURRENT_TIMESTAMP
 );

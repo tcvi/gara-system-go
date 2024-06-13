@@ -8,7 +8,7 @@ import (
 func (s *Storage) GetList(query interface{}, args ...interface{}) ([]domain.User, error) {
 	var users []domain.User
 
-	err := s.db.Where(query, args).Find(&users).Error
+	err := s.db.Where(query, args...).Find(&users).Error
 	if err != nil {
 		return nil, errors.Wrap(err, "GetList User fail")
 	}

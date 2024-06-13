@@ -52,3 +52,14 @@ func (c *Category) MappingCategoryModel() *CategoryModel {
 		UpdatedAt: c.UpdatedAt,
 	}
 }
+
+func (i *Item) MappingItemModel() *ItemModel {
+	return &ItemModel{
+		ID:          i.ID,
+		Name:        i.Name,
+		Description: i.Description,
+		Price:       i.Price,
+		CreatedAt:   i.CreatedAt,
+		UpdatedAt:   i.UpdatedAt,
+	}
+}

@@ -3,6 +3,7 @@ package httpserver
 import (
 	"garasystem/internal/adapters/httpserver/handler/auth"
 	"garasystem/internal/adapters/httpserver/handler/category"
+	"garasystem/internal/adapters/httpserver/handler/item"
 	"garasystem/internal/adapters/httpserver/handler/user"
 	"garasystem/internal/adapters/httpserver/handler/vehicleorder"
 	"garasystem/internal/core/ports"
@@ -20,6 +21,7 @@ type Server struct {
 	authHandler     ports.AuthHandler
 	vehicleHandler  ports.VehicleOrderHandler
 	categoryHandler ports.CategoryHandler
+	itemHandler     ports.ItemHandler
 }
 
 func NewServer(
@@ -27,6 +29,7 @@ func NewServer(
 	userService ports.UserService,
 	vehicleService ports.VehicleOrderService,
 	categoryService ports.CategoryService,
+	itemService ports.ItemService,
 	snsService ports.SNSService,
 ) (*Server, error) {
 	s := &Server{
@@ -36,6 +39,7 @@ func NewServer(
 		authHandler:     auth.NewHandler(config, userService, snsService),
 		vehicleHandler:  vehicleorder.NewHandler(vehicleService),
 		categoryHandler: category.NewHandler(categoryService),
+		itemHandler:     item.NewHandler(itemService),
 	}
 
 	// Middleware
@@ -70,6 +74,11 @@ func NewServer(
 	categoryGroup.POST("", s.categoryHandler.Create)
 	categoryGroup.PUT("/:id", s.categoryHandler.Update)
 	categoryGroup.DELETE("/:id", s.categoryHandler.Delete)
+
+	itemGroup := apiGroup.Group("/items")
+	itemGroup.GET("", s.itemHandler.GetItems)
+	itemGroup.POST("", s.itemHandler.CreateItem)
+	itemGroup.PUT("/:id", s.itemHandler.UpdateItem)
 
 	return s, nil
 }

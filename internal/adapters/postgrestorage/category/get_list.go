@@ -6,11 +6,11 @@ import (
 )
 
 func (s *Storage) GetList(query interface{}, args ...interface{}) ([]domain.Category, error) {
-	var categories []domain.Category
+	categories := make([]domain.Category, 0)
 
 	db := s.db
 	if query != nil && args != nil {
-		db = db.Where(query, args)
+		db = db.Where(query, args...)
 	}
 
 	err := db.Find(&categories).Error

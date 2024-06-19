@@ -63,3 +63,15 @@ func (i *Item) MappingItemModel() *ItemModel {
 		UpdatedAt:   i.UpdatedAt,
 	}
 }
+
+func (v *VehicleOrderItem) MappingVehicleOrderItemModel() *VehicleOrderItemModel {
+	return &VehicleOrderItemModel{
+		ID:        v.ID,
+		Item:      ItemModel{ID: v.ItemID},
+		Note:      v.Note,
+		Price:     v.Price,
+		Quantity:  v.Quantity,
+		CreatedAt: v.CreatedAt,
+		UpdatedAt: v.UpdatedAt,
+	}
+}

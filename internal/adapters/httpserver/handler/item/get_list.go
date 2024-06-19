@@ -14,7 +14,7 @@ func (h *Handler) GetItems(c echo.Context) error {
 		return util.Response.Error(c, myerror.ErrItemInvalidData(err))
 	}
 
-	items, err := h.service.GetList(&req)
+	items, err := h.service.Filter(&req)
 	if err != nil {
 		return util.Response.Error(c, err.(myerror.MyError))
 	}

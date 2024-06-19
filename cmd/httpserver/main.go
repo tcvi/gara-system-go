@@ -10,11 +10,13 @@ import (
 	itemstorage "garasystem/internal/adapters/postgrestorage/item"
 	userstorage "garasystem/internal/adapters/postgrestorage/user"
 	vehicleorderstorage "garasystem/internal/adapters/postgrestorage/vehicleorder"
+	vehicleorderitemstorage "garasystem/internal/adapters/postgrestorage/vehicleorderitem"
 	"garasystem/internal/core/services"
 	categoryservice "garasystem/internal/core/services/category"
 	itemservice "garasystem/internal/core/services/item"
 	userservice "garasystem/internal/core/services/user"
 	vehicleorderservice "garasystem/internal/core/services/vehicleorder"
+	vehicleorderitemservice "garasystem/internal/core/services/vehicleorderitem"
 	"garasystem/internal/logger"
 	"garasystem/pkg/config"
 	"net/http"
@@ -40,26 +42,33 @@ func main() {
 	}
 
 	db, err := postgrestorage.NewConnection(postgrestorage.ParseFromConfig(cfg))
-	//db, err := dynamodbstorage.NewConnection(awsConfig)
 	if err != nil {
 		logger.Log.Fatal(err)
 	}
 
 	userStore := userstorage.NewStorage(db)
-	//userStore := userstorage.NewStorage(db)
 	vehicleStore := vehicleorderstorage.NewStorage(db)
 	categoryStore := categorystorage.NewStorage(db)
 	itemStore := itemstorage.NewStorage(db)
+	vehicleOrderItemsStore := vehicleorderitemstorage.NewStorage(db)
 
-	repo := services.NewRepository(userStore, vehicleStore, categoryStore, itemStore)
+	repo := services.NewRepository(userStore, vehicleStore, categoryStore, itemStore, vehicleOrderItemsStore)
 
 	snsService := snsservice.NewSnsService(awsConfig)
 	userService = userservice.NewUserService(repo, snsService)
-	vehicleOrderService := vehicleorderservice.NewVehicleService(repo, userService)
-	categoryService := categoryservice.NewService(repo)
 	itemService := itemservice.NewService(repo)
+	vehicleOrderItemService := vehicleorderitemservice.NewVehicleService(repo, itemService)
+	vehicleOrderService := vehicleorderservice.NewVehicleService(repo, userService, vehicleOrderItemService)
+	categoryService := categoryservice.NewService(repo)
 
-	server, _ := httpserver.NewServer(cfg, userService, vehicleOrderService, categoryService, itemService, snsService)
+	server := httpserver.NewServer(cfg,
+		userService,
+		vehicleOrderService,
+		categoryService,
+		itemService,
+		vehicleOrderItemService,
+		snsService,
+	)
 
 	addr := fmt.Sprintf(":%d", cfg.Port)
 	logger.Log.Println("server started at port", addr)

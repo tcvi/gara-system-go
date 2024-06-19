@@ -9,7 +9,8 @@ type ItemStore interface {
 	Get(query interface{}, args ...interface{}) (*domain.Item, error)
 	Create(item *domain.Item) error
 	Update(item *domain.Item) error
-	GetList(filter *domain.FilterItemRequest) ([]domain.Item, error)
+	Filter(filter *domain.FilterItemRequest) ([]domain.Item, error)
+	GetList(query interface{}, args ...interface{}) ([]domain.Item, error)
 }
 
 type ItemHandler interface {
@@ -21,5 +22,6 @@ type ItemHandler interface {
 type ItemService interface {
 	Create(req domain.CreateItemReq) error
 	Update(req domain.UpdateItemReq) error
-	GetList(filter *domain.FilterItemRequest) ([]domain.ItemModel, error)
+	Filter(filter *domain.FilterItemRequest) ([]domain.ItemModel, error)
+	GetById(ID int64) (*domain.ItemModel, error)
 }

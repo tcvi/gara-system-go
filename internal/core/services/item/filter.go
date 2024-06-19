@@ -5,7 +5,7 @@ import (
 	"garasystem/internal/core/myerror"
 )
 
-func (u *Service) GetList(req *domain.FilterItemRequest) ([]domain.ItemModel, error) {
+func (u *Service) Filter(req *domain.FilterItemRequest) ([]domain.ItemModel, error) {
 	items, err := u.repo.ItemStore.GetList(req)
 	if err != nil {
 		return nil, myerror.ErrItemGetList(err)

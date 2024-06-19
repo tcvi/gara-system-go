@@ -6,10 +6,19 @@ import (
 )
 
 type Service struct {
-	repo        *services.Repository
-	userService ports.UserService
+	repo                    *services.Repository
+	userService             ports.UserService
+	vehicleOrderItemService ports.VehicleOrderItemService
 }
 
-func NewVehicleService(repo *services.Repository, userService ports.UserService) *Service {
-	return &Service{repo: repo, userService: userService}
+func NewVehicleService(
+	repo *services.Repository,
+	userService ports.UserService,
+	vehicleOrderItemService ports.VehicleOrderItemService,
+) *Service {
+	return &Service{
+		repo:                    repo,
+		userService:             userService,
+		vehicleOrderItemService: vehicleOrderItemService,
+	}
 }

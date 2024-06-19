@@ -50,7 +50,7 @@ CREATE TABLE "vehicle_order_items"
 (
     "id"               SERIAL PRIMARY KEY,
     "vehicle_order_id" bigint NOT NULL,
-    "item_id"          bigint,
+    "item_id"          bigint NOT NULL,
     "note"             text,
     "price"            bigint    NOT NULL,
     "quantity"         int       NOT NULL,

@@ -31,5 +31,8 @@ func (s *Service) GetByID(id int64) (*domain.VehicleOrderModel, error) {
 	}
 	vehicleOrderModel.HistoryStatuses = histories
 
+	items, err := s.vehicleOrderItemService.GetList(id)
+	vehicleOrderModel.Items = items
+
 	return vehicleOrderModel, nil
 }

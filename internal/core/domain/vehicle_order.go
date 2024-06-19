@@ -32,6 +32,7 @@ type VehicleOrderModel struct {
 	Status          Status                           `json:"status"`
 	Note            string                           `json:"note"`
 	HistoryStatuses []VehicleOrderStatusHistoryModel `json:"history_statuses,omitempty"`
+	Items           []VehicleOrderItemModel          `json:"items,omitempty"`
 	CreatedAt       time.Time                        `json:"created_at"`
 	UpdatedAt       time.Time                        `json:"updated_at"`
 }

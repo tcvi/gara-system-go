@@ -3,9 +3,9 @@ package vehicleoderitem
 import "garasystem/internal/core/ports"
 
 type Handler struct {
-	service ports.VehicleOrderService
+	service ports.VehicleOrderItemService
 }
 
-func NewHandler(service ports.VehicleOrderService) *Handler {
+func NewHandler(service ports.VehicleOrderItemService) *Handler {
 	return &Handler{service: service}
 }

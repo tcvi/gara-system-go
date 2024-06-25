@@ -14,6 +14,7 @@ import (
 	"garasystem/internal/core/services"
 	categoryservice "garasystem/internal/core/services/category"
 	itemservice "garasystem/internal/core/services/item"
+	notificationservice "garasystem/internal/core/services/notification"
 	userservice "garasystem/internal/core/services/user"
 	vehicleorderservice "garasystem/internal/core/services/vehicleorder"
 	vehicleorderitemservice "garasystem/internal/core/services/vehicleorderitem"
@@ -60,6 +61,10 @@ func main() {
 	vehicleOrderItemService := vehicleorderitemservice.NewVehicleService(repo, itemService)
 	vehicleOrderService := vehicleorderservice.NewVehicleService(repo, userService, vehicleOrderItemService)
 	categoryService := categoryservice.NewService(repo)
+	notificationService, err := notificationservice.NewService()
+	if err != nil {
+		logger.Log.Fatal("Create notificationService fail ", err)
+	}
 
 	server := httpserver.NewServer(cfg,
 		userService,
@@ -67,6 +72,7 @@ func main() {
 		categoryService,
 		itemService,
 		vehicleOrderItemService,
+		notificationService,
 		snsService,
 	)
 

@@ -4,6 +4,7 @@ import (
 	"garasystem/internal/adapters/httpserver/handler/auth"
 	"garasystem/internal/adapters/httpserver/handler/category"
 	"garasystem/internal/adapters/httpserver/handler/item"
+	"garasystem/internal/adapters/httpserver/handler/notification"
 	"garasystem/internal/adapters/httpserver/handler/user"
 	"garasystem/internal/adapters/httpserver/handler/vehicleoderitem"
 	"garasystem/internal/adapters/httpserver/handler/vehicleorder"
@@ -23,6 +24,7 @@ type Server struct {
 	vehicleHandler          ports.VehicleOrderHandler
 	categoryHandler         ports.CategoryHandler
 	itemHandler             ports.ItemHandler
+	notificationHandler     ports.NotificationHandler
 	vehicleOrderItemHandler ports.VehicleOrderItemHandler
 }
 
@@ -33,6 +35,7 @@ func NewServer(
 	categoryService ports.CategoryService,
 	itemService ports.ItemService,
 	vehicleOrderItemService ports.VehicleOrderItemService,
+	notificationService ports.NotificationService,
 	snsService ports.SNSService,
 ) *Server {
 	s := &Server{
@@ -43,6 +46,7 @@ func NewServer(
 		vehicleHandler:          vehicleorder.NewHandler(vehicleService),
 		categoryHandler:         category.NewHandler(categoryService),
 		itemHandler:             item.NewHandler(itemService),
+		notificationHandler:     notification.NewHandler(notificationService),
 		vehicleOrderItemHandler: vehicleoderitem.NewHandler(vehicleOrderItemService),
 	}
 
@@ -87,6 +91,9 @@ func NewServer(
 	itemGroup.GET("", s.itemHandler.GetItems)
 	itemGroup.POST("", s.itemHandler.CreateItem)
 	itemGroup.PUT("/:id", s.itemHandler.UpdateItem)
+
+	notificationGroup := apiGroup.Group("/notifications")
+	notificationGroup.POST("", s.notificationHandler.PushNotification)
 
 	return s
 }

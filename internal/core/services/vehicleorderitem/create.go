@@ -33,7 +33,7 @@ func validateCreateOrderItems(s *Service, orderItems []domain.VehicleOrderItemRe
 	// Check item exist ?
 	keys := make([]int64, 0, len(orderItemIds))
 
-	for key, _ := range orderItemIds {
+	for key := range orderItemIds {
 		keys = append(keys, key)
 	}
 

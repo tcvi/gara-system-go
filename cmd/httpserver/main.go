@@ -11,20 +11,18 @@ import (
 	userstorage "garasystem/internal/adapters/postgrestorage/user"
 	vehicleorderstorage "garasystem/internal/adapters/postgrestorage/vehicleorder"
 	vehicleorderitemstorage "garasystem/internal/adapters/postgrestorage/vehicleorderitem"
+	"garasystem/internal/adapters/redis"
 	"garasystem/internal/core/services"
 	categoryservice "garasystem/internal/core/services/category"
 	itemservice "garasystem/internal/core/services/item"
 	notificationservice "garasystem/internal/core/services/notification"
+	"garasystem/internal/core/services/redistask"
 	userservice "garasystem/internal/core/services/user"
 	vehicleorderservice "garasystem/internal/core/services/vehicleorder"
 	vehicleorderitemservice "garasystem/internal/core/services/vehicleorderitem"
 	"garasystem/internal/logger"
 	"garasystem/pkg/config"
 	"net/http"
-)
-
-var (
-	userService *userservice.Service
 )
 
 func init() {
@@ -56,7 +54,7 @@ func main() {
 	repo := services.NewRepository(userStore, vehicleStore, categoryStore, itemStore, vehicleOrderItemsStore)
 
 	snsService := snsservice.NewSnsService(awsConfig)
-	userService = userservice.NewUserService(repo, snsService)
+	userService := userservice.NewUserService(repo, snsService)
 	itemService := itemservice.NewService(repo)
 	vehicleOrderItemService := vehicleorderitemservice.NewVehicleService(repo, itemService)
 	vehicleOrderService := vehicleorderservice.NewVehicleService(repo, userService, vehicleOrderItemService)
@@ -65,7 +63,7 @@ func main() {
 	if err != nil {
 		logger.Log.Fatal("Create notificationService fail ", err)
 	}
-
+	redisClient := redistask.NewRedisTaskClient(cfg)
 	server := httpserver.NewServer(cfg,
 		userService,
 		vehicleOrderService,
@@ -73,8 +71,14 @@ func main() {
 		itemService,
 		vehicleOrderItemService,
 		notificationService,
+		redisClient,
 		snsService,
 	)
+
+	// Start redis task server
+	go func() {
+		redis.NewServer(cfg, notificationService)
+	}()
 
 	addr := fmt.Sprintf(":%d", cfg.Port)
 	logger.Log.Println("server started at port", addr)

@@ -19,6 +19,12 @@ func (s *Service) PushNotifications(tokens []string, req domain.Notification) er
 			Title: req.Title,
 			Body:  req.Message,
 		},
+		Android: &messaging.AndroidConfig{
+			Priority: "high",
+			Data: map[string]string{
+				"sound": "default",
+			},
+		},
 	})
 	if err != nil {
 		return myerror.ErrNotificationPush(err)

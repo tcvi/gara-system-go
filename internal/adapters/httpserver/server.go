@@ -36,6 +36,7 @@ func NewServer(
 	itemService ports.ItemService,
 	vehicleOrderItemService ports.VehicleOrderItemService,
 	notificationService ports.NotificationService,
+	redisTaskClient ports.RedisTaskClient,
 	snsService ports.SNSService,
 ) *Server {
 	s := &Server{
@@ -46,7 +47,7 @@ func NewServer(
 		vehicleHandler:          vehicleorder.NewHandler(vehicleService),
 		categoryHandler:         category.NewHandler(categoryService),
 		itemHandler:             item.NewHandler(itemService),
-		notificationHandler:     notification.NewHandler(notificationService),
+		notificationHandler:     notification.NewHandler(notificationService, redisTaskClient),
 		vehicleOrderItemHandler: vehicleoderitem.NewHandler(vehicleOrderItemService),
 	}
 

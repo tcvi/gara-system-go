@@ -14,7 +14,10 @@ func (h *Handler) PushNotification(c echo.Context) error {
 		return util.Response.Error(c, myerror.ErrNotificationInvalidData(err))
 	}
 
-	err = h.service.PushNotifications(req.Tokens, req.Data)
+	err = h.RedisTask.NewPushNotificationTask(domain.TaskPushNotificationPayload{
+		Tokens:       req.Tokens,
+		Notification: req.Data,
+	})
 	if err != nil {
 		return util.Response.Error(c, err.(myerror.MyError))
 	}

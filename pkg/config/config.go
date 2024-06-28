@@ -19,6 +19,12 @@ type Config struct {
 		Pass      string `envconfig:"DB_PASS"`
 		EnableSSL bool   `envconfig:"ENABLE_SSL"`
 	}
+
+	Redis struct {
+		Password string `envconfig:"REDIS_PASSWORD"`
+		Port     string `envconfig:"REDIS_PORT"`
+		Host     string `envconfig:"REDIS_HOST"`
+	}
 }
 
 func LoadConfig() (*Config, error) {

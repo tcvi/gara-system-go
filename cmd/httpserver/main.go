@@ -14,6 +14,7 @@ import (
 	"garasystem/internal/adapters/redis"
 	"garasystem/internal/core/services"
 	categoryservice "garasystem/internal/core/services/category"
+	mattermosthook "garasystem/internal/core/services/hook"
 	itemservice "garasystem/internal/core/services/item"
 	notificationservice "garasystem/internal/core/services/notification"
 	"garasystem/internal/core/services/redistask"
@@ -63,7 +64,10 @@ func main() {
 	if err != nil {
 		logger.Log.Fatal("Create notificationService fail ", err)
 	}
+
+	hook := mattermosthook.NewMattermostHook(cfg)
 	redisClient := redistask.NewRedisTaskClient(cfg)
+
 	server := httpserver.NewServer(cfg,
 		userService,
 		vehicleOrderService,
@@ -77,7 +81,7 @@ func main() {
 
 	// Start redis task server
 	go func() {
-		redis.NewServer(cfg, notificationService)
+		redis.NewServer(cfg, notificationService, hook)
 	}()
 
 	addr := fmt.Sprintf(":%d", cfg.Port)

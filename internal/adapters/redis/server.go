@@ -23,10 +23,11 @@ func (s *Server) HandlePushNotification(ctx context.Context, task *asynq.Task) e
 	return s.TaskHandler.HandlePushNotification(p)
 }
 
-func NewServer(config *config.Config, notificationService ports.NotificationService) {
+func NewServer(config *config.Config, notificationService ports.NotificationService, hook ports.HookService) {
 	s := Server{
 		TaskHandler: &Handler{
 			notificationService,
+			hook,
 		},
 	}
 

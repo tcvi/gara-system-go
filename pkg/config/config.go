@@ -25,6 +25,10 @@ type Config struct {
 		Port     string `envconfig:"REDIS_PORT"`
 		Host     string `envconfig:"REDIS_HOST"`
 	}
+
+	Hook struct {
+		Mattermost string `envconfig:"MATTERMOST_URL"`
+	}
 }
 
 func LoadConfig() (*Config, error) {

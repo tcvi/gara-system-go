@@ -6,9 +6,13 @@ import (
 )
 
 type Handler struct {
-	NotificationService ports.NotificationService
+	notificationService ports.NotificationService
+	hook                ports.HookService
 }
 
 func (h *Handler) HandlePushNotification(payload domain.TaskPushNotificationPayload) error {
-	return h.NotificationService.PushNotifications(payload.Tokens, payload.Notification)
+	// Send message to mattermost
+	_ = h.hook.Send(payload.Notification.Message)
+
+	return h.notificationService.PushNotifications(payload.Tokens, payload.Notification)
 }

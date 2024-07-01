@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"garasystem/internal/adapters/aws"
 	"garasystem/internal/adapters/aws/snsservice"
+	"garasystem/internal/adapters/cron"
 	"garasystem/internal/adapters/httpserver"
 	"garasystem/internal/adapters/postgrestorage"
 	categorystorage "garasystem/internal/adapters/postgrestorage/category"
@@ -82,6 +83,12 @@ func main() {
 	// Start redis task server
 	go func() {
 		redis.NewServer(cfg, notificationService, hook)
+	}()
+
+	c := cron.StartCron()
+	defer func() {
+		logger.Log.Println("Stop cron")
+		c.Stop()
 	}()
 
 	addr := fmt.Sprintf(":%d", cfg.Port)

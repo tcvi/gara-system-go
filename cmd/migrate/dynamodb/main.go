@@ -3,6 +3,8 @@ package main
 import (
 	"context"
 	"garasystem/internal/adapters/aws/dynamodbstorage"
+	"garasystem/internal/logger"
+	"garasystem/pkg/config"
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
@@ -10,7 +12,14 @@ import (
 )
 
 func main() {
-	db, err := dynamodbstorage.NewConnection()
+	cfg, err := config.LoadConfig()
+	if err != nil {
+		logger.Log.Fatal(err)
+	}
+
+	awsConfig := config.LoadAwsConfig(cfg)
+
+	db, err := dynamodbstorage.NewConnection(awsConfig)
 	if err != nil {
 		log.Fatalln("Connect dynamodb fail: ", err)
 	}

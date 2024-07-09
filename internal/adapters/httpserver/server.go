@@ -3,6 +3,7 @@ package httpserver
 import (
 	"garasystem/internal/adapters/httpserver/handler/auth"
 	"garasystem/internal/adapters/httpserver/handler/category"
+	"garasystem/internal/adapters/httpserver/handler/file"
 	"garasystem/internal/adapters/httpserver/handler/item"
 	"garasystem/internal/adapters/httpserver/handler/notification"
 	"garasystem/internal/adapters/httpserver/handler/user"
@@ -26,6 +27,7 @@ type Server struct {
 	itemHandler             ports.ItemHandler
 	notificationHandler     ports.NotificationHandler
 	vehicleOrderItemHandler ports.VehicleOrderItemHandler
+	fileHandler             ports.FileHandler
 }
 
 func NewServer(
@@ -38,6 +40,7 @@ func NewServer(
 	notificationService ports.NotificationService,
 	redisTaskClient ports.RedisTaskClient,
 	snsService ports.SNSService,
+	fileService ports.FileService,
 ) *Server {
 	s := &Server{
 		config:                  config,
@@ -49,6 +52,7 @@ func NewServer(
 		itemHandler:             item.NewHandler(itemService),
 		notificationHandler:     notification.NewHandler(notificationService, redisTaskClient),
 		vehicleOrderItemHandler: vehicleoderitem.NewHandler(vehicleOrderItemService),
+		fileHandler:             file.NewHandler(fileService),
 	}
 
 	// Middleware
@@ -95,6 +99,9 @@ func NewServer(
 
 	notificationGroup := apiGroup.Group("/notifications")
 	notificationGroup.POST("", s.notificationHandler.PushNotification)
+
+	fileGroup := apiGroup.Group("/files")
+	fileGroup.POST("", s.fileHandler.Upload)
 
 	return s
 }

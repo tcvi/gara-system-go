@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"garasystem/internal/adapters/aws"
+	s3store "garasystem/internal/adapters/aws/s3"
 	"garasystem/internal/adapters/aws/snsservice"
 	"garasystem/internal/adapters/cron"
 	"garasystem/internal/adapters/httpserver"
@@ -15,6 +15,7 @@ import (
 	"garasystem/internal/adapters/redis"
 	"garasystem/internal/core/services"
 	categoryservice "garasystem/internal/core/services/category"
+	fileservice "garasystem/internal/core/services/file"
 	mattermosthook "garasystem/internal/core/services/hook"
 	itemservice "garasystem/internal/core/services/item"
 	notificationservice "garasystem/internal/core/services/notification"
@@ -37,10 +38,7 @@ func main() {
 		logger.Log.Fatal(err)
 	}
 
-	awsConfig, err := aws.LoadConfig()
-	if err != nil {
-		logger.Log.Fatal(err)
-	}
+	awsConfig := config.LoadAwsConfig(cfg)
 
 	db, err := postgrestorage.NewConnection(postgrestorage.ParseFromConfig(cfg))
 	if err != nil {
@@ -52,6 +50,7 @@ func main() {
 	categoryStore := categorystorage.NewStorage(db)
 	itemStore := itemstorage.NewStorage(db)
 	vehicleOrderItemsStore := vehicleorderitemstorage.NewStorage(db)
+	s3Store := s3store.NewS3Service(awsConfig)
 
 	repo := services.NewRepository(userStore, vehicleStore, categoryStore, itemStore, vehicleOrderItemsStore)
 
@@ -61,6 +60,7 @@ func main() {
 	vehicleOrderItemService := vehicleorderitemservice.NewVehicleService(repo, itemService)
 	vehicleOrderService := vehicleorderservice.NewVehicleService(repo, userService, vehicleOrderItemService)
 	categoryService := categoryservice.NewService(repo)
+	fileService := fileservice.NewService(repo, s3Store)
 	notificationService, err := notificationservice.NewService()
 	if err != nil {
 		logger.Log.Fatal("Create notificationService fail ", err)
@@ -78,6 +78,7 @@ func main() {
 		notificationService,
 		redisClient,
 		snsService,
+		fileService,
 	)
 
 	// Start redis task server

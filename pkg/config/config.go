@@ -1,10 +1,16 @@
 package config
 
 import (
+	"context"
 	"fmt"
+	"garasystem/internal/logger"
+	"github.com/aws/aws-sdk-go-v2/aws"
+	awsconfig "github.com/aws/aws-sdk-go-v2/config"
 	"github.com/kelseyhightower/envconfig"
 	"github.com/lpernett/godotenv"
 )
+
+var config Config
 
 type Config struct {
 	AppEnv       string `envconfig:"APP_ENV"`
@@ -29,17 +35,37 @@ type Config struct {
 	Hook struct {
 		Mattermost string `envconfig:"MATTERMOST_URL"`
 	}
+
+	AWS struct {
+		BucketName string `envconfig:"AWS_BUCKET_NAME"`
+	}
 }
 
 func LoadConfig() (*Config, error) {
 	// load default .env file, ignore the error
 	_ = godotenv.Load()
 
-	cfg := new(Config)
-	err := envconfig.Process("", cfg)
+	err := envconfig.Process("", &config)
 	if err != nil {
 		return nil, fmt.Errorf("load config error: %v", err)
 	}
 
-	return cfg, nil
+	return &config, nil
+}
+
+func GetConfig() *Config {
+	return &config
+}
+
+func LoadAwsConfig(cfg *Config) aws.Config {
+	awsConfig, err := awsconfig.LoadDefaultConfig(
+		context.TODO(),
+		awsconfig.WithRegion("ap-southeast-1"),
+		awsconfig.WithSharedConfigProfile("gara-system-dev"),
+	)
+	if err != nil {
+		logger.Log.Fatal("fail to load aws config: ", err)
+	}
+
+	return awsConfig
 }
